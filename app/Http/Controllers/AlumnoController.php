@@ -20,9 +20,10 @@ class AlumnoController extends Controller
         $this->CursoLibros = new CursoLibros();
     }
     /**
-     * Método que muestra todos los almnos de los cursos
-     *
-     * @return responseJson alumnos
+     * Método que muestra todos los alumnos de los cursos y con sus detalles
+     * agrega ademas el ultimo digito
+     * 
+     * @author Victor Curilao 
      * */
     public function getAlumnoAll(){
         $alumnos = $this->Alumno->getAlumnoDetalle();

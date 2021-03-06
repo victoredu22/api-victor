@@ -9,7 +9,11 @@ class CursoLibros extends Model
 {
     protected $table = "tblCursoLibro";
     protected $primaryKey = "idCursoLibro";
-
+    /**
+     * Metodo que asocia el libro con el curso
+     * 
+     * @author Victor Curilao
+     */
     public function insertCursoLibro($request, $libro){
     
         $cursoLibros = new CursoLibros;

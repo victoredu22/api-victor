@@ -7,6 +7,7 @@ use App\Models\Libros;
 use App\Models\Alumno;
 use App\Models\Pedido;
 use App\Models\CursoLibros;
+use App\Models\LibroStock;
 use Validator;
 use \stdClass;
 
@@ -18,11 +19,12 @@ class LibrosController extends Controller
         $this->Alumno = new Alumno();
         $this->Pedido = new Pedido();
         $this->CursoLibros = new CursoLibros();
+        $this->LibroStock = new LibroStock();
     }
     /**
      * Método que muestra todos los libros que se encuentran en el sistema
      *
-     * @param ninguno
+     * @author Victor Curilao
      * */
     public function getLibrosAll()
     {
@@ -72,7 +74,7 @@ class LibrosController extends Controller
         }
 
         $createPedido = $this->Pedido->createPedido($request->idLibro, $busquedaAlumno->idAlumno,$request->fechaEntrega);
-        $disminuicionLibro = $this->Libros->disminucionLibro($request);
+        $disminuicionLibro = $this->LibroStock->disminucionStock($request);
         
         return response()
             ->json([
@@ -80,6 +82,11 @@ class LibrosController extends Controller
                 'msg'=>"libroArrendado"
             ]);
     }
+    /**
+     * Metodo que actualiza los parametros del libro
+     * 
+     * @author Victor Curilao
+     */
     public function updateLibro(Request $request)
     {
         $reglas = array(
@@ -113,6 +120,11 @@ class LibrosController extends Controller
                 ]);
         }
     }
+    /**
+     * Metodo que crea un nuevo libro y ademas aumenta el stock
+     * 
+     * @author Victor Curilao
+     */
     public function createLibro(Request $request)
     {
         $reglas = array(
@@ -148,12 +160,17 @@ class LibrosController extends Controller
                 ]);
         }
     }
-
+    /**
+     * Metodo que obtiene los libros en el sistema, ademas que filtra la cantidad de libros 0
+     * 
+     * @author Victor Curilao
+     */
     public function librosSinStock()
     {
         $libros = $this->Libros->getLibros();
-        $librosSinStock = $libros->filter(function ($elem, $key) {
-            return $elem->cantidad == 0;
+
+        $librosSinStock = $libros->filter(function ($elem, $key) {  
+            return  $elem->cantidad == 0;
         })->values()->all();
 
         return response()
@@ -162,15 +179,19 @@ class LibrosController extends Controller
                     "librosSinStock"=>$librosSinStock
                 ]);
     }
-
+    /**
+     * Metodo de libros pedidos que traen la informacion detallada de todos los libros
+     * 
+     * @author Victor Curilao
+     */
     public function librosPedidos()
     {
         $pedidos = $this->Pedido->getPedido();
         $pedidosActivos = $pedidos->filter(function ($elem, $key) {
             return $elem->activo == 1;
         });
-
         $pedidosLibros = $pedidosActivos->groupBy('idLibro')->values()->all();
+
         $conjuntoLibros = collect($pedidosLibros)->map(function ($elem, $key) {
             $groupPedidos = $elem->map(function ($elem, $key) {
                 return $elem->idLibro;
@@ -191,7 +212,11 @@ class LibrosController extends Controller
                     "conjuntoLibros"=>$conjuntoLibros
                 ]);
     }
-
+    /**
+     * Informacion de los libros segun el id
+     * 
+     * @author Victor Curilao
+     */
     public function infoLibroId($idLibro)
     {   
         $request = new stdClass;

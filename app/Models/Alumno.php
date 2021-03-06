@@ -9,32 +9,52 @@ class Alumno extends Model
 {
     protected $table = "tblAlumno";
     protected $primaryKey = "idAlumno";
-    public function getAlumnos(){
-        $alumnos = DB::table('tblAlumno')
+
+    /**
+     * Metodo que trae todos los alumnos de la tabla alumnos
+     * 
+     * @return $get
+     */
+    public function getAlumnos()
+    {
+        $get = DB::table('tblAlumno')
                     ->get();
 
-        return $alumnos;
+        return $get;
     }
-    public function getAlumnosById($idAlumno){
+    /**
+     * Metodo que busca datos del alumno segun el idAlumno
+     * 
+     * @return $get
+     */
+    public function getAlumnosById($idAlumno)
+    {
         $Alumno =  DB::table('tblAlumno')
-                    ->join('tblDetalleAlumno','tblAlumno.idAlumno','tblDetalleAlumno.idAlumno')
-                    ->select('tblAlumno.idAlumno','tblAlumno.numeroDocumento','tblAlumno.email','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido')
-                    ->where('tblAlumno.idAlumno',$idAlumno)
+                    ->join('tblDetalleAlumno', 'tblAlumno.idAlumno', 'tblDetalleAlumno.idAlumno')
+                    ->select('tblAlumno.idAlumno', 'tblAlumno.numeroDocumento', 'tblAlumno.email', 'tblDetalleAlumno.nombre', 'tblDetalleAlumno.apellido')
+                    ->where('tblAlumno.idAlumno', $idAlumno)
                     ->get()
                     ->first();
         return $Alumno;
     }
-    public function getAlumnoDetalle(){
-        $alumnos = DB::table('tblAlumno')
-                    ->join('tblDetalleAlumno','tblAlumno.idAlumno','tblDetalleAlumno.idAlumno')
-                    ->select('tblAlumno.idAlumno','tblAlumno.numeroDocumento','tblAlumno.email','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido')
+    /**
+     * Metodo que trae detalles de todos los alumnos del sistema junto al detalleALumno
+     *
+     * @return get
+     */
+    public function getAlumnoDetalle()
+    {
+        $get = DB::table('tblAlumno')
+                    ->join('tblDetalleAlumno', 'tblAlumno.idAlumno', 'tblDetalleAlumno.idAlumno')
+                    ->select('tblAlumno.idAlumno', 'tblAlumno.numeroDocumento', 'tblAlumno.email', 'tblDetalleAlumno.nombre', 'tblDetalleAlumno.apellido')
                     ->get();
-        return $alumnos;
+        return $get;
     }
 
-    public function getAlumnoByRut($numeroDocumento){
+    public function getAlumnoByRut($numeroDocumento)
+    {
         $get = DB::table('tblAlumno')
-                ->where('numeroDocumento',$numeroDocumento)
+                ->where('numeroDocumento', $numeroDocumento)
                 ->get()
                 ->first();
 

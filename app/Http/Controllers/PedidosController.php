@@ -4,30 +4,44 @@ namespace App\Http\Controllers;
 
 use App\Models\Pedido;
 use App\Models\Libros;
+use App\Models\LibroStock;
+
 use Illuminate\Http\Request;
 
 use Carbon\Carbon;
 use \stdClass;
 use Validator;
+
 class PedidosController extends Controller
 {
     public function __construct()
     {
         $this->Pedido = new Pedido();
         $this->Libro = new Libros();
+        $this->LibroStock = new LibroStock();
     }
-    /*  */
-    public function infoPedidoAlumno($idAlumno){
-     
+    /**
+     * Metodo que obtiene los pedido segun el IdAlumno
+     * 
+     * @author Victor Curilao
+    */
+    public function infoPedidoAlumno($idAlumno)
+    {
         $pedidoAlumno = $this->Pedido->getPedidoAlumno($idAlumno);
         $totalPedidos = count($pedidoAlumno);
 
         return response()->json([
             'ok'=>true,
             'totalPedido'=>$totalPedidos,
-            'pedidoAlumno'=>$pedidoAlumnoF
+            'pedidoAlumno'=>$pedidoAlumno
         ]);
     }
+    /**
+     * Metodos que muestra los ultimos pedidos que estan activos
+     * asociando libros y alumnos
+     * 
+     * @author Victor Curilao
+     */
     public function pedidosRecientes()
     {
         $getPedido = $this->Pedido->getUltimosPedidos();
@@ -37,6 +51,11 @@ class PedidosController extends Controller
             'getPedido'=>$getPedido
         ]);
     }
+    /**
+     * Metodo que nos trae todos los libros pendientes de acuerdo a la llamada de este
+     * 
+     * @author Victor Curilao
+     */
     public function librosPendientes()
     {
         $date = Carbon::now();
@@ -57,7 +76,11 @@ class PedidosController extends Controller
             'listadoAlumno'=>$alumnosNotNull
         ]);
     }
-
+    /**
+     * Muestra la cantidad de pedidos que se encuentran en el mes de ingreso a la pagina
+     * 
+     * @author Victor Curilao
+     */
     public function pedidosMes()
     {
         $date = Carbon::now();
@@ -81,15 +104,15 @@ class PedidosController extends Controller
 
         $mesesNumero = array('01','02','03','04','05','06','07','08','09','10','11','12');
 
-        $pedidoAño = $this->Pedido->getPedidoAño($año);        
+        $pedidoAño = $this->Pedido->getPedidoAño($año);
         $sumaPedido = count($pedidoAño);
       
-        $totalPedidosAño = collect($mesesNumero)->map(function ($elem, $key) use ($año,$sumaPedido) {
+        $totalPedidosAño = collect($mesesNumero)->map(function ($elem, $key) use ($año, $sumaPedido) {
             $instanciaMes = $año.'-'.$elem;
             $fechaInicio = Carbon::parse($instanciaMes)->startOfMonth()->format('Y-m-d');
             $fechaTermino = Carbon::parse($instanciaMes)->endOfMonth()->format('Y-m-d');
 
-            return count($this->Pedido->getPedidoMes($fechaInicio, $fechaTermino) );
+            return count($this->Pedido->getPedidoMes($fechaInicio, $fechaTermino));
         });
 
         $añoLibros = collect($meses)->map(function ($elem, $keyMes) use ($totalPedidosAño) {
@@ -106,9 +129,14 @@ class PedidosController extends Controller
             'totalPedidosAño'=>$añoLibros
         ]);
     }
-
-    public function createPedido(Request $request){
-
+    /**
+     * Metodo que crea pedidos de alumnos y libros que hayan solicitado,
+     * parametros idLibro, idAlumno, fechaEntrega
+     * Ademas disminuye en la tabla stock de acuardo al pedido que se hizo
+     * 
+     */
+    public function createPedido(Request $request)
+    {
         $reglas = array(
             "idLibro" => "required",
             "idAlumno" => "required",
@@ -141,7 +169,7 @@ class PedidosController extends Controller
 
         $getLibro = $this->Libro->findLibroId($request);
 
-        if($getLibro->cantidad == 0){
+        if ($getLibro->cantidad == 0) {
             return response()
             ->json([
                 'ok'=>false,
@@ -149,23 +177,27 @@ class PedidosController extends Controller
             ]);
         }
 
-        $disminuicion = $this->Libro->disminucionLibro($request);
+        $disminuicion = $this->LibroStock->disminucionStock($request);
         $createPedido = $this->Pedido->createPedidoFecha($request);
         return response()
             ->json([
                 'ok'=>true,
                 'pedido'=>$createPedido
-            ]); 
+            ]);
     }
-
-    public function updateEstadoPedido(Request $request){
-        
+    /**
+     * Metodo que actualiza el estado del pedido segun el idLibro y idALumno
+     * 
+     * @author Victor Curilao
+     */
+    public function updateEstadoPedido(Request $request)
+    {
         $updatePedido = $this->Pedido->updateEstado($request);
         return response()
             ->json([
                 'ok'=>true,
                 'msg'=>"estadoActualizado",
                 'updatePedido'=>$updatePedido
-            ]); 
+            ]);
     }
 }

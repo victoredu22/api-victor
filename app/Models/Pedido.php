@@ -9,11 +9,23 @@ class Pedido extends Model
 {
     protected $table = "tblPedido";
     protected $primaryKey = "idPedido";
+
+    /**
+     * Metodo que busca todos los pedidos junto con el stock del libro
+     * 
+     * @return $get
+     */
     public function getPedido(){
-        $get = DB::table('tblPedido')    
-        ->get();
+        $get = DB::table('tblPedido')  
+                ->join('tblLibroStock','tblPedido.idLibro','=','tblLibroStock.idLibro')  
+                ->get();
         return $get;
     }
+    /**
+     * Metodo que busca todos los pedidos activos del sistema
+     * 
+     * @return $get
+     */
     public function getPedidosActivos(){
         $get = DB::table('tblPedido')
                 ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
@@ -26,6 +38,12 @@ class Pedido extends Model
 
         return $get;
     }
+    /**
+     * Consulta que trae los ultimos pedidos de la base datos en base de alumno y libros
+     * los ordena segun la fecha de la creacion
+     * 
+     * @return get
+     */
     public function getUltimosPedidos(){
 
         $get = DB::table('tblPedido')
@@ -40,7 +58,11 @@ class Pedido extends Model
 
         return $get;
     }
-
+    /**
+     * Metodo que busca el pedido segun el idLibro y el idALumno
+     * 
+     * @return get
+     */
     public function getIdPedido($idLibro,$idAlumno){
         $get = DB::table('tblPedido')
                 ->where('idLibro',$idLibro)
@@ -50,7 +72,11 @@ class Pedido extends Model
                 ->first();
         return $get;
     }
-
+    /**
+     * Metodo que crea un nuevo pedido segun los paremetros entrantes
+     *
+     * @return insert
+     */
     public function createPedido($idLibro,$idAlumno,$fechaEntrega){
         $libro = new Pedido;
         $libro->idLibro = $idLibro;
@@ -87,7 +113,11 @@ class Pedido extends Model
                 
         return $get;
     }
-
+    /**
+     * Metodo que obiene datos del pedido segun el idAlumno
+     * 
+     * @return get
+     */
     public function getPedidoAlumno($idAlumno){
         $get = DB::table('tblPedido')
                 ->where('idAlumno',$idAlumno)
@@ -107,6 +137,11 @@ class Pedido extends Model
         $libro->save();
         return $libro;
     }
+    /**
+     * Actualiza el estado del pedido
+     * 
+     * @return update pedido
+     */
     public function updateEstado($request){
 
         $pedido = new Pedido;
@@ -116,4 +151,5 @@ class Pedido extends Model
 
         return $pedido;
     }
+
 }
