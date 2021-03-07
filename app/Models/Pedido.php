@@ -51,7 +51,7 @@ class Pedido extends Model
                 ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
                 ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
                 ->where('tblPedido.activo',1)
-                ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblpedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
+                ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
                         'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.created_at')
                 ->orderBy('created_at', 'DESC')
                 ->get();
