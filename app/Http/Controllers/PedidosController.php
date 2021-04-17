@@ -20,6 +20,27 @@ class PedidosController extends Controller
         $this->Libro = new Libros();
         $this->LibroStock = new LibroStock();
     }
+    public function getPedidos(Request $request){
+
+/* 
+        $getPedidos = $this->Pedido->getPedidoAll(2);
+ */
+        $getPedidos = $this->Pedido->getUltimosPedidosPaginate()->paginate(10);
+        
+        return response()->json([
+                'pagination'=>[
+                    'total'=>$getPedidos->total(),
+                    'current_page'=>$getPedidos->currentPage(),
+                    'per_page'=>$getPedidos->perPage(),
+                    'last_page'=>$getPedidos->lastPage(),
+                    'from'=>$getPedidos->firstItem(),
+                    'to'=>$getPedidos->lastPage()
+                ],
+                'getPedidos'=>$getPedidos
+        ]);
+    
+    }
+    
     /**
      * Metodo que obtiene los pedido segun el IdAlumno
      * 

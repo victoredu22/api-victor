@@ -22,6 +22,8 @@ Route::post('login','LoginController@login');
 Route::post('register','LoginController@register');
 Route::get('imagenLogin','LoginController@imagenLogin');
 
+
+
 Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
     Route::get('loginLogeado','LoginController@loginLogeado');
 
@@ -29,8 +31,6 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
     Route::get('librosSinStock','LibrosController@librosSinStock');
     Route::get('infoLibroId/{idLibro}','LibrosController@infoLibroId');
  
-    
-
 
     Route::get('getUsuario','LoginController@getUsuario');
     Route::get('libros','LibrosController@getLibrosAll');
@@ -41,6 +41,7 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
     
     Route::get('porcentajePedidos','PedidosController@porcentajePedidos');
     Route::get('librosPedidos','LibrosController@librosPedidos');
+
     Route::get('pedidosMes','PedidosController@pedidosMes');
     Route::get('infoPedidoAlumno/{idAlumno}','PedidosController@infoPedidoAlumno');
 
@@ -50,5 +51,8 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
     Route::post('create-pedido','PedidosController@createPedido');
 
     Route::post('updateEstadoLibro','PedidosController@updateEstadoPedido');
-        
+   
+    
+
+    Route::get('pedidosAll','PedidosController@getPedidos');
 });

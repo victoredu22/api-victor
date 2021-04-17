@@ -32,7 +32,7 @@ class Pedido extends Model
                 ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
                 ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
                 ->where('tblPedido.activo',1)
-                ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblpedido.fechaEntrega',
+                ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega',
                         'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro')
                 ->get();
 
@@ -58,6 +58,27 @@ class Pedido extends Model
 
         return $get;
     }
+    /**
+     * Consulta que trae los ultimos pedidos de la base datos en base de alumno y libros
+     * los ordena segun la fecha de la creacion
+     * 
+     * @return get
+     */
+    public function getUltimosPedidosPaginate(){
+
+        $get = DB::table('tblPedido')
+                ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
+                ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
+                ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+                ->where('tblPedido.activo',1)
+                ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
+                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.created_at')
+                ->orderBy('created_at', 'DESC');
+
+        return $get;
+    }
+
+
     /**
      * Metodo que busca el pedido segun el idLibro y el idALumno
      * 
@@ -152,4 +173,8 @@ class Pedido extends Model
         return $pedido;
     }
 
-}
+    public function getPedidoAll($numeroPaginate){
+        $get = DB::table('tblPedido')->paginate($numeroPaginate);
+        return $get;
+    }
+}   
