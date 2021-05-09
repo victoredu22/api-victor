@@ -20,13 +20,37 @@ class PedidosController extends Controller
         $this->Libro = new Libros();
         $this->LibroStock = new LibroStock();
     }
+
+    public function searchPedido(Request $request){
+        $request = $request->all();
+        $buscador = $request['buscador'];
+
+
+        $resultadoBusqueda = $this->Pedido->getUltimosPedidosSearch($buscador)->paginate(5);
+
+        
+        return response()->json([
+            'ok'=>true,
+            'pagination'=>[
+                'total'=>$resultadoBusqueda->total(),
+                'current_page'=>$resultadoBusqueda->currentPage(),
+                'per_page'=>$resultadoBusqueda->perPage(),
+                'last_page'=>$resultadoBusqueda->lastPage(),
+                'from'=>$resultadoBusqueda->firstItem(),
+                'to'=>$resultadoBusqueda->lastPage()
+            ],
+            'resultadoBusqueda'=>$resultadoBusqueda
+        ]);
+    }
+
+
     public function getPedidos(Request $request){
 
 /* 
         $getPedidos = $this->Pedido->getPedidoAll(2);
  */
-        $getPedidos = $this->Pedido->getUltimosPedidosPaginate()->paginate(10);
-        
+        $getPedidos = $this->Pedido->getUltimosPedidosPaginate()->paginate(5);
+   
         return response()->json([
                 'pagination'=>[
                     'total'=>$getPedidos->total(),

@@ -70,15 +70,33 @@ class Pedido extends Model
                 ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
                 ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
                 ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+                ->leftJoin('tblAlumnoCurso','tblAlumnoCurso.idAlumno','tblAlumno.idAlumno')
+                ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
                 ->where('tblPedido.activo',1)
                 ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
-                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.created_at')
-                ->orderBy('created_at', 'DESC');
+                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRecibido','tblPedido.created_at as fechaRetiro','tblCurso.nombreCurso')
+                ->orderBy('fechaRecibido', 'DESC');
 
         return $get;
     }
 
+    public function getUltimosPedidosSearch($buscador){
+        
+        $get = DB::table('tblPedido')
+                ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
+                ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
+                ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+                ->leftJoin('tblAlumnoCurso','tblAlumnoCurso.idAlumno','tblAlumno.idAlumno')
+                ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
+                
+                ->where('tblPedido.activo',1)
+                ->where('tblLibro.nombreLibro', 'LIKE', '%'.$buscador.'%')
+                ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
+                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRecibido','tblPedido.created_at as fechaRetiro','tblCurso.nombreCurso')
+                ->orderBy('fechaRecibido', 'DESC');
 
+        return $get;
+    }
     /**
      * Metodo que busca el pedido segun el idLibro y el idALumno
      * 
@@ -110,7 +128,7 @@ class Pedido extends Model
 
     public function getPedidoMes($fechaInicio,$fechaTermino){
         $get = DB::table('tblPedido')
-                ->whereBetween('fechaPedido', [$fechaInicio, $fechaTermino])
+                ->whereBetween('created_at', [$fechaInicio, $fechaTermino])
                 ->where('activo',1)
                 ->get();
 

@@ -55,4 +55,5 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
     
 
     Route::get('pedidosAll','PedidosController@getPedidos');
+    Route::get('searchPedido','PedidosController@searchPedido');
 });
