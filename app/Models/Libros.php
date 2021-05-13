@@ -11,7 +11,16 @@ class Libros extends Model
 {
     protected $table = "tblLibro";
     protected $primaryKey = "idLibro";
-
+    /**
+     * Metodo con el metodo find que me trae la info del libro segun el id
+     * 
+     * @return get
+     */
+    public function getLibroId($idLibro){
+        $libros = new Libros;
+        $libros = libros::find($idLibro);
+        return $libros;
+    }
     /**
      * Metodo que trae todos los libros que se encuentran en el sistema
      * 

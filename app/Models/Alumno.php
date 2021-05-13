@@ -60,4 +60,17 @@ class Alumno extends Model
 
         return $get;
     }
+
+
+    public function getAlumnoDetalleByRut($numeroDocumento)
+    {
+        $get = DB::table('tblAlumno')
+                ->join('tblDetalleAlumno','tblAlumno.idAlumno','tblDetalleAlumno.idAlumno')
+                ->where('tblAlumno.numeroDocumento', $numeroDocumento)
+                ->select('tblAlumno.idAlumno', 'tblAlumno.numeroDocumento', 'tblAlumno.email', 'tblDetalleAlumno.nombre', 'tblDetalleAlumno.apellido')
+                ->get()
+                ->first();
+
+        return $get;
+    }
 }

@@ -51,6 +51,9 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
     Route::post('create-pedido','PedidosController@createPedido');
 
     Route::post('updateEstadoLibro','PedidosController@updateEstadoPedido');
+
+
+    Route::post('searchAlumnoRut/{rut}','AlumnoController@searchAlumnoRut');
    
     
 

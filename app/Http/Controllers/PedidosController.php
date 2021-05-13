@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use App\Models\Libros;
 use App\Models\LibroStock;
+use App\Models\AlumnoCurso;
+use App\Models\Curso;
 
 use Illuminate\Http\Request;
 
@@ -19,6 +21,8 @@ class PedidosController extends Controller
         $this->Pedido = new Pedido();
         $this->Libro = new Libros();
         $this->LibroStock = new LibroStock();
+        $this->AlumnoCurso = new AlumnoCurso();
+        $this->Curso = new Curso();
     }
 
     public function searchPedido(Request $request){
@@ -224,10 +228,17 @@ class PedidosController extends Controller
 
         $disminuicion = $this->LibroStock->disminucionStock($request);
         $createPedido = $this->Pedido->createPedidoFecha($request);
+        $getPedido = $this->Pedido->getPedidoId($createPedido->idPedido);
+        $getLibro = $this->Libro->getLibroId($createPedido->idLibro);
+ 
+        $getAlumnoCurso = $this->AlumnoCurso->getAlumnoByIdAlumno($getPedido->idAlumno);
+        $curso = $this->Curso->getCursoById($getAlumnoCurso->idCurso);
         return response()
             ->json([
                 'ok'=>true,
-                'pedido'=>$createPedido
+                'pedido'=>$getPedido,
+                'libro'=>$getLibro,
+                'curso'=>$curso
             ]);
     }
     /**
@@ -237,6 +248,7 @@ class PedidosController extends Controller
      */
     public function updateEstadoPedido(Request $request)
     {
+        
         $updatePedido = $this->Pedido->updateEstado($request);
         return response()
             ->json([

@@ -19,6 +19,14 @@ class AlumnoController extends Controller
         $this->Pedido = new Pedido();
         $this->CursoLibros = new CursoLibros();
     }
+    public function searchAlumnoRut($rut){
+        $alumno = $this->Alumno->getAlumnoDetalleByRut($rut);
+
+        return response()
+            ->json([
+                'alumno'=>$alumno
+            ]);
+    }
     /**
      * Método que muestra todos los alumnos de los cursos y con sus detalles
      * agrega ademas el ultimo digito

@@ -74,8 +74,8 @@ class Pedido extends Model
                 ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
                 ->where('tblPedido.activo',1)
                 ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
-                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRecibido','tblPedido.created_at as fechaRetiro','tblCurso.nombreCurso')
-                ->orderBy('fechaRecibido', 'DESC');
+                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
+                ->orderBy('fechaRetiro', 'DESC');
 
         return $get;
     }
@@ -92,8 +92,8 @@ class Pedido extends Model
                 ->where('tblPedido.activo',1)
                 ->where('tblLibro.nombreLibro', 'LIKE', '%'.$buscador.'%')
                 ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado',
-                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRecibido','tblPedido.created_at as fechaRetiro','tblCurso.nombreCurso')
-                ->orderBy('fechaRecibido', 'DESC');
+                        'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
+                ->orderBy('fechaRetiro', 'DESC');
 
         return $get;
     }
@@ -166,15 +166,26 @@ class Pedido extends Model
         return $get;
     }
 
-
+    /**
+     * Metodo que crea un nuevo pedido
+     * @return insert
+     */
     public function createPedidoFecha($request){
+
         $libro = new Pedido;
         $libro->idLibro = $request->idLibro;
         $libro->idAlumno = $request->idAlumno;
         $libro->fechaEntrega = $request->fechaEntrega;
+        $libro->estadoRetiro = $request->estadoRetiro;
         $libro->activo = 1;
         $libro->save();
         return $libro;
+    }
+
+    public function getPedidoId($idLibro){
+        $pedido = new Pedido;
+        $pedido = pedido::find($idLibro);
+        return $pedido;
     }
     /**
      * Actualiza el estado del pedido
@@ -186,6 +197,7 @@ class Pedido extends Model
         $pedido = new Pedido;
         $pedido = pedido::find($request->idPedido);
         $pedido->estado = $request->estado;
+        $pedido->estadoEntrega = $request->estadoEntrega;
         $pedido->save();
 
         return $pedido;
