@@ -24,26 +24,111 @@ class PedidosController extends Controller
         $this->AlumnoCurso = new AlumnoCurso();
         $this->Curso = new Curso();
     }
+    public function searchPedidoAlumnoLibro(Request $request){
+       
+  
+        $getPedidos = $this->Pedido->getPedidoAlumnoLibro($request)->paginate(5);
+        return response()->json([
+            'ok'=>true,
+            'pagination'=>[
+                'total'=>$getPedidos->total(),
+                'current_page'=>$getPedidos->currentPage(),
+                'per_page'=>$getPedidos->perPage(),
+                'last_page'=>$getPedidos->lastPage(),
+                'from'=>$getPedidos->firstItem(),
+                'to'=>$getPedidos->lastPage()
+            ],
+            'getPedidos'=>$getPedidos
+        ]);
 
+
+    }
+    public function searchPedidoCursoLibro(Request $request){
+        $idCursos = $request->idCursos;
+
+        $getPedidos = $this->Pedido->getPedidoCursoLibro($idCursos,$request->buscador)->paginate(5);
+
+        return response()->json([
+            'ok'=>true,
+            'pagination'=>[
+                'total'=>$getPedidos->total(),
+                'current_page'=>$getPedidos->currentPage(),
+                'per_page'=>$getPedidos->perPage(),
+                'last_page'=>$getPedidos->lastPage(),
+                'from'=>$getPedidos->firstItem(),
+                'to'=>$getPedidos->lastPage()
+            ],
+            'getPedidos'=>$getPedidos
+        ]);
+
+    }
+    public function searchPedidoAlumno($idAlumno){
+    
+        $getPedidos = $this->Pedido->getPedidoByAlumno($idAlumno)->paginate(5);
+        return response()->json([
+            'ok'=>true,
+            'pagination'=>[
+                'total'=>$getPedidos->total(),
+                'current_page'=>$getPedidos->currentPage(),
+                'per_page'=>$getPedidos->perPage(),
+                'last_page'=>$getPedidos->lastPage(),
+                'from'=>$getPedidos->firstItem(),
+                'to'=>$getPedidos->lastPage()
+            ],
+            'getPedidos'=>$getPedidos
+        ]);
+    }
+    /**
+     * 
+     */
+    public function searchCursoByIds(Request $request){
+       
+      
+      
+
+        $idCursos = $request->idCursos;
+    
+        $getPedidos = $this->Pedido->getCursosByIds($idCursos)->paginate(5);
+
+        return response()->json([
+            'ok'=>true,
+            'pagination'=>[
+                'total'=>$getPedidos->total(),
+                'current_page'=>$getPedidos->currentPage(),
+                'per_page'=>$getPedidos->perPage(),
+                'last_page'=>$getPedidos->lastPage(),
+                'from'=>$getPedidos->firstItem(),
+                'to'=>$getPedidos->lastPage()
+            ],
+            'getPedidos'=>$getPedidos
+        ]);
+ 
+    }
+
+    /**
+     * Metodo que recibe como parametro el campo buscador, para luego buscarlo en el modelo pedido
+     * entrega el listado total de los resultados y ademas variables de paginacion
+     * 
+     * @author Victor curilao
+     */
     public function searchPedido(Request $request){
         $request = $request->all();
         $buscador = $request['buscador'];
 
-
-        $resultadoBusqueda = $this->Pedido->getUltimosPedidosSearch($buscador)->paginate(5);
-
+        $getPedidos = $this->Pedido->getUltimosPedidosSearch($buscador)->paginate(5);
         
         return response()->json([
             'ok'=>true,
             'pagination'=>[
-                'total'=>$resultadoBusqueda->total(),
-                'current_page'=>$resultadoBusqueda->currentPage(),
-                'per_page'=>$resultadoBusqueda->perPage(),
-                'last_page'=>$resultadoBusqueda->lastPage(),
-                'from'=>$resultadoBusqueda->firstItem(),
-                'to'=>$resultadoBusqueda->lastPage()
+                'total'=>$getPedidos->total(),
+                'current_page'=>$getPedidos->currentPage(),
+                'per_page'=>$getPedidos->perPage(),
+                'last_page'=>$getPedidos->lastPage(),
+                'from'=>$getPedidos->firstItem(),
+                'to'=>$getPedidos->lastPage()
             ],
-            'resultadoBusqueda'=>$resultadoBusqueda
+            ///cambiar a getpedidos!!!!!!!!!!!!!!
+            'getPedidos'=>$getPedidos
         ]);
     }
 

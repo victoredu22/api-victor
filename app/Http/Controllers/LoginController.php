@@ -45,7 +45,7 @@ class LoginController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Usuario Incorrecto',
-            ], 400);
+            ]);
         }
 
         $token = $this->respondWithToken($jwt_token);

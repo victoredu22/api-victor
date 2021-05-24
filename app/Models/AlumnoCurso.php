@@ -30,4 +30,24 @@ class AlumnoCurso extends Model
        
     return $alumno;
   }
+
+  public function getAlumnosCurso($idsCurso){
+
+    $get = DB::table('tblAlumnoCurso')
+        ->whereIn('tblAlumnoCurso.idCurso',$idsCurso)
+        ->leftJoin('tblAlumno','tblAlumnoCurso.idAlumno','=','tblAlumno.idAlumno')
+        ->leftJoin('tblDetalleAlumno','tblAlumnoCurso.idAlumno','=','tblDetalleAlumno.idAlumno')
+        ->select('tblAlumnoCurso.idAlumno','tblAlumnoCurso.idAlumnoxcurso','tblAlumno.numeroDocumento','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido')
+        ->get()->unique('idAlumno');
+      return $get; 
+  }
+  public function getAlumnosCursoAll(){
+
+    $get = DB::table('tblAlumnoCurso')
+        ->leftJoin('tblAlumno','tblAlumnoCurso.idAlumno','=','tblAlumno.idAlumno')
+        ->leftJoin('tblDetalleAlumno','tblAlumnoCurso.idAlumno','=','tblDetalleAlumno.idAlumno')
+        ->select('tblAlumnoCurso.idAlumno','tblAlumnoCurso.idAlumnoxcurso','tblAlumno.numeroDocumento','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido')
+        ->get()->unique('idAlumno');
+      return $get; 
+  }
 }

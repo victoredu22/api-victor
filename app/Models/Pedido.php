@@ -79,7 +79,12 @@ class Pedido extends Model
 
         return $get;
     }
-
+    /**
+     * Consulta que trae los pedido segun la palabra que se ingresa como parametro
+     * esta palabra obedece solamente al nombre del libro
+     * 
+     * @return get
+     */
     public function getUltimosPedidosSearch($buscador){
         
         $get = DB::table('tblPedido')
@@ -95,6 +100,72 @@ class Pedido extends Model
                         'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
                 ->orderBy('fechaRetiro', 'DESC');
 
+        return $get;
+    }
+    public function getCursosByIds($idCursos){
+        $get = DB::table('tblPedido')
+        ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
+        ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
+        ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblAlumnoCurso','tblAlumnoCurso.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
+        ->where('tblPedido.activo',1)
+        ->whereIn('tblCurso.idCurso', $idCursos)
+        ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado','tblCurso.idCurso',
+                'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
+        ->orderBy('fechaRetiro', 'DESC');
+        
+        return $get;
+    }
+
+
+    public function getPedidoByAlumno($idAlumno){
+        $get = DB::table('tblPedido')
+        ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
+        ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
+        ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblAlumnoCurso','tblAlumnoCurso.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
+        ->where('tblPedido.activo',1)
+        ->where('tblPedido.idAlumno', $idAlumno)
+        ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado','tblCurso.idCurso',
+                'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
+        ->orderBy('fechaRetiro', 'DESC');
+        
+        return $get;
+    }
+
+    public function getPedidoCursoLibro($idCurso, $buscador){
+        $get = DB::table('tblPedido')
+        ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
+        ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
+        ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblAlumnoCurso','tblAlumnoCurso.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
+        ->where('tblPedido.activo',1)
+        ->whereIn('tblCurso.idCurso', $idCurso)
+        ->where('tblLibro.nombreLibro', 'LIKE', '%'.$buscador.'%')
+        ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado','tblCurso.idCurso',
+                'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
+        ->orderBy('fechaRetiro', 'DESC');
+        
+        return $get;
+    }
+
+    public function getPedidoAlumnoLibro($request){
+        $get = DB::table('tblPedido')
+        ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
+        ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')
+        ->join('tblDetalleAlumno','tblDetalleAlumno.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblAlumnoCurso','tblAlumnoCurso.idAlumno','tblAlumno.idAlumno')
+        ->leftJoin('tblCurso','tblAlumnoCurso.idCurso','tblCurso.idCurso')
+        ->where('tblPedido.activo',1)
+        ->where('tblLibro.nombreLibro', 'LIKE', '%'.$request->buscador.'%')
+        ->where('tblPedido.idAlumno', $request->idAlumno)
+        ->select('tblPedido.idPedido','tblPedido.idLibro','tblPedido.idAlumno','tblPedido.fechaEntrega','tblPedido.activo','tblPedido.estado','tblCurso.idCurso',
+                'tblAlumno.idAlumno','tblDetalleAlumno.nombre','tblDetalleAlumno.apellido','tblLibro.nombreLibro','tblPedido.fechaRetiro','tblPedido.estadoRetiro','tblPedido.estadoEntrega','tblCurso.nombreCurso')
+        ->orderBy('fechaRetiro', 'DESC');
+        
         return $get;
     }
     /**

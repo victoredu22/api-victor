@@ -21,4 +21,12 @@ class Curso extends Model
     $curso = curso::find($idCurso);
     return $curso;
   }
+
+  public function getCursoAll(){
+    $get = DB::table('tblCurso')
+        ->get()
+        ->all();
+
+      return $get;
+  }
 }

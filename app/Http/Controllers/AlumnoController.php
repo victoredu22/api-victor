@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Libros;
 use App\Models\Alumno;
 use App\Models\Pedido;
+use App\Models\AlumnoCurso;
 use App\Models\CursoLibros;
 use Illuminate\Http\Request;
 use Validator;
@@ -17,7 +18,27 @@ class AlumnoController extends Controller
         $this->Libros = new Libros();
         $this->Alumno = new Alumno();
         $this->Pedido = new Pedido();
+        $this->AlumnoCurso = new AlumnoCurso();
         $this->CursoLibros = new CursoLibros();
+    }
+    public function searchAlumnoCurso(Request $request){
+        $idsCurso = $request->idCursos;
+        $alumnos = $this->AlumnoCurso->getAlumnosCurso($idsCurso)->values()->all();
+     
+
+
+        if(count($idsCurso) === 0){
+          $alumnos = $this->AlumnoCurso->getAlumnosCursoAll()->values()->all();
+        }
+
+
+        $addUltimoDigito = collect($alumnos)->map(function($alumno){
+            $alumno->numeroDocumento = $alumno->numeroDocumento.'-'.$this->calculaDV($alumno->numeroDocumento);
+            return $alumno;
+        });
+
+        return response()->json(['alumnos'=>$alumnos]);
+
     }
     public function searchAlumnoRut($rut){
         $alumno = $this->Alumno->getAlumnoDetalleByRut($rut);
