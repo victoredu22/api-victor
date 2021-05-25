@@ -28,6 +28,8 @@ class PedidosController extends Controller
        
   
         $getPedidos = $this->Pedido->getPedidoAlumnoLibro($request)->paginate(5);
+  
+
         return response()->json([
             'ok'=>true,
             'pagination'=>[
