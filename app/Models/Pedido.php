@@ -141,7 +141,7 @@ class Pedido extends Model
 
     public function getPedidoCursoLibro($idCurso, $buscador){
 
-        
+
         $get = DB::table('tblPedido')
         ->join('tblLibro','tblLibro.idLibro','tblPedido.idLibro')
         ->join('tblAlumno','tblAlumno.idAlumno','tblPedido.idAlumno')

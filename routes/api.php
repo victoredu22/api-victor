@@ -68,5 +68,8 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
 
 
 
+    Route::post('searchLibros','PedidosController@searchLibros');
+
+
     Route::get('cursoAll','CursoController@getCurso');
 });

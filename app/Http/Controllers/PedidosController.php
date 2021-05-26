@@ -24,12 +24,35 @@ class PedidosController extends Controller
         $this->AlumnoCurso = new AlumnoCurso();
         $this->Curso = new Curso();
     }
-    public function searchPedidoAlumnoLibro(Request $request){
-       
-  
-        $getPedidos = $this->Pedido->getPedidoAlumnoLibro($request)->paginate(5);
-  
+    public function searchLibros(Request $request){
+     
+        $idCursos = $request->idCursos;
+        $buscador = $request->buscador;
+        $alumno = $request->alumno;
 
+        switch ($request) {
+            case count($idCursos) > 0 && $buscador != "undefined":
+                $getPedido =  $this->Pedido->getPedidoCursoLibro($idCursos, $buscador);
+                break;
+            case $alumno != "undefined" && $buscador != "undefined":
+                $getPedido = $this->Pedido->getPedidoAlumnoLibro($request);
+                break;
+            case $alumno != "undefined":
+                $getPedido = $this->Pedido->getPedidoByAlumno($alumno);
+                break;
+            case count($idCursos) > 0:
+                $getPedido = $this->Pedido->getCursosByIds($idCursos);
+                break;
+            case $buscador != "undefined":
+                $getPedido = $this->Pedido->getUltimosPedidosSearch($buscador);
+                break;
+            default:
+                $getPedido = $this->Pedido->getUltimosPedidosPaginate();    
+            break;
+        }
+
+        $getPedidos = $getPedido->paginate(5);
+        
         return response()->json([
             'ok'=>true,
             'pagination'=>[
@@ -44,7 +67,51 @@ class PedidosController extends Controller
         ]);
 
 
+
+        if($buscador != "undefined" && $idCursos != "undefined" ){
+            $prueba = "los dos";
+
+        }else if($buscador != "undefined"){
+            $getPedidos = $this->Pedido->getUltimosPedidosSearch($buscador)->paginate(5);
+            $prueba = "solo buscador";
+        }else if($idCursos != "undefined"){
+            $prueba = "solo idcurso";
+            $getPedidos = $this->Pedido->getCursosByIds($idCursos)->paginate(5);
+        }
+
+
+
+        dd($prueba);
+
     }
+
+    /**
+     * Busca resultados dependiendo libros y los alumnos ingresados
+     * 
+     * @author Victor curilao
+     */
+    public function searchPedidoAlumnoLibro(Request $request){
+       
+        $getPedidos = $this->Pedido->getPedidoAlumnoLibro($request)->paginate(5);
+  
+        return response()->json([
+            'ok'=>true,
+            'pagination'=>[
+                'total'=>$getPedidos->total(),
+                'current_page'=>$getPedidos->currentPage(),
+                'per_page'=>$getPedidos->perPage(),
+                'last_page'=>$getPedidos->lastPage(),
+                'from'=>$getPedidos->firstItem(),
+                'to'=>$getPedidos->lastPage()
+            ],
+            'getPedidos'=>$getPedidos
+        ]);
+    }
+    /**
+     * Busca 
+     * 
+     * @author victor curilao
+     */
     public function searchPedidoCursoLibro(Request $request){
         $idCursos = $request->idCursos;
 
@@ -86,10 +153,7 @@ class PedidosController extends Controller
     public function searchCursoByIds(Request $request){
        
       
-      
 
-        $idCursos = $request->idCursos;
-    
         $getPedidos = $this->Pedido->getCursosByIds($idCursos)->paginate(5);
 
         return response()->json([
@@ -116,6 +180,7 @@ class PedidosController extends Controller
     public function searchPedido(Request $request){
         $request = $request->all();
         $buscador = $request['buscador'];
+        
 
         $getPedidos = $this->Pedido->getUltimosPedidosSearch($buscador)->paginate(5);
         

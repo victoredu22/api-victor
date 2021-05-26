@@ -10,6 +10,11 @@ class CursoController extends Controller
     {
         $this->Curso = new Curso();
     }
+    /**
+     * Obtiene todos los cursos de la bd
+     * 
+     * @author victor curilao
+     */
     public function getCurso(){
         $getCurso = $this->Curso->getCursoAll();
         return response()->json([

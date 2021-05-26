@@ -21,25 +21,30 @@ class AlumnoController extends Controller
         $this->AlumnoCurso = new AlumnoCurso();
         $this->CursoLibros = new CursoLibros();
     }
+    /**
+     * Busqueda de alumnos segun el idsCursos, despues formatea el rut con su ultimo digito
+     * 
+     * @author Victor curilao
+     */
     public function searchAlumnoCurso(Request $request){
         $idsCurso = $request->idCursos;
         $alumnos = $this->AlumnoCurso->getAlumnosCurso($idsCurso)->values()->all();
      
-
-
         if(count($idsCurso) === 0){
           $alumnos = $this->AlumnoCurso->getAlumnosCursoAll()->values()->all();
         }
-
-
         $addUltimoDigito = collect($alumnos)->map(function($alumno){
             $alumno->numeroDocumento = $alumno->numeroDocumento.'-'.$this->calculaDV($alumno->numeroDocumento);
             return $alumno;
         });
 
         return response()->json(['alumnos'=>$alumnos]);
-
     }
+    /**
+     * Busqueda del alumno segun el rut entrega todos los datos personales del alumno
+     * 
+     * @author victor curilao
+     */
     public function searchAlumnoRut($rut){
         $alumno = $this->Alumno->getAlumnoDetalleByRut($rut);
 
