@@ -46,6 +46,7 @@ class PedidosController extends Controller
 
     }
     public function searchPedidoCursoLibro(Request $request){
+
         $idCursos = $request->idCursos;
 
         $getPedidos = $this->Pedido->getPedidoCursoLibro($idCursos,$request->buscador)->paginate(5);
