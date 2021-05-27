@@ -57,16 +57,11 @@ Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
    
     
 
-    Route::get('pedidosAll','PedidosController@getPedidos');
-    Route::get('searchPedido','PedidosController@searchPedido');
     Route::post('searchAlumnoCurso','AlumnoController@searchAlumnoCurso');
-    Route::post('searchCursoByIds','PedidosController@searchCursoByIds');
-    Route::get('searchPedidoAlumno/{idAlumno}','PedidosController@searchPedidoAlumno');
-
-    Route::post('searchPedidoCursoLibro','PedidosController@searchPedidoCursoLibro');
-    Route::post('searchPedidoAlumnoLibro','PedidosController@searchPedidoAlumnoLibro');
+  
 
 
+    
 
     Route::post('searchLibros','PedidosController@searchLibros');
 
