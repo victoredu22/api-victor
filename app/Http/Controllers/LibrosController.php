@@ -149,14 +149,14 @@ class LibrosController extends Controller
         
         $libro = $this->Libros->createLibro($request);
         $createCursos = $this->CursoLibros->insertCursoLibro($request, $libro);
-
         if ($createCursos) {
             return response()
                 ->json([
                     'ok'=>true,
                     "msg"=>"libroCreado",
                     "libro"=>$libro,
-                    'cursoLibro'=>$createCursos
+                    'cursoLibro'=>$createCursos,
+                    'cantidad'=>$request->cantidad
                 ]);
         }
     }
