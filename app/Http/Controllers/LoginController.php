@@ -41,6 +41,7 @@ class LoginController extends Controller
         $credentials = request(['numeroDocumento', 'password']);
         $jwt_token = null;
 
+        
         if (!$jwt_token = JWTAuth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
