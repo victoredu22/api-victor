@@ -22,6 +22,25 @@ Route::post('login','LoginController@login');
 Route::post('register','LoginController@register');
 Route::get('imagenLogin','LoginController@imagenLogin');
 
+Route::post('ingresoContacto','ContactoController@insertContacto');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Route::group(['middleware' => ['jwt.verify','cors'] ], function(){
